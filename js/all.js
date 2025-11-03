@@ -14,7 +14,9 @@ init();
 // ======= 產品清單 =======
 function getProductList() {
   axios
-    .get(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/products`)
+    .get(
+      `https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/products`
+    )
     .then(function (response) {
       dataArr = response.data.products;
       renderProductList(dataArr);
@@ -32,7 +34,9 @@ function renderProductList(list) {
               <img src="${item.images}" alt="">
               <a href="#" class="addCardBtn" data-id="${item.id}">加入購物車</a>
               <h3>${item.title}</h3>
-              <del class="originPrice">NT$${toThousands(item.origin_price)}</del>
+              <del class="originPrice">NT$${toThousands(
+                item.origin_price
+              )}</del>
               <p class="nowPrice">NT$${toThousands(item.price)}</p>
             </li>`;
   });
@@ -64,9 +68,12 @@ productList.addEventListener("click", function (e) {
   });
 
   axios
-    .post(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts`, {
-      data: { productId, quantity: numCheck },
-    })
+    .post(
+      `https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts`,
+      {
+        data: { productId, quantity: numCheck },
+      }
+    )
     .then(function () {
       alert("加入購物車");
       getCartList();
@@ -76,9 +83,13 @@ productList.addEventListener("click", function (e) {
 // ======= 購物車列表 =======
 function getCartList() {
   axios
-    .get(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts`)
+    .get(
+      `https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts`
+    )
     .then(function (response) {
-      document.querySelector(".js-total").textContent = toThousands(response.data.finalTotal);
+      document.querySelector(".js-total").textContent = toThousands(
+        response.data.finalTotal
+      );
       CartData = response.data.carts;
 
       let str = "";
@@ -93,13 +104,19 @@ function getCartList() {
             </td>
             <td>NT$${toThousands(item.product.price)}</td>
             <td>
-              <button class="js-decrease" data-id="${item.id}" data-qty="${item.quantity}">-</button>
+              <button class="js-decrease" data-id="${item.id}" data-qty="${
+          item.quantity
+        }">-</button>
               <span class="mx-2">${item.quantity}</span>
-              <button class="js-increase" data-id="${item.id}" data-qty="${item.quantity}">+</button>
+              <button class="js-increase" data-id="${item.id}" data-qty="${
+          item.quantity
+        }">+</button>
             </td>
             <td>NT$${toThousands(item.product.price * item.quantity)}</td>
             <td class="discardBtn">
-              <a href="#" class="material-icons" data-id="${item.id}"> clear </a>
+              <a href="#" class="material-icons" data-id="${
+                item.id
+              }"> clear </a>
             </td>
           </tr>`;
       });
@@ -108,10 +125,12 @@ function getCartList() {
     .catch((error) => console.error("資料載入失敗", error));
 }
 
-
 cartList.addEventListener("click", function (e) {
-  e.preventDefault();
-  if (e.target.classList.contains("js-increase") || e.target.classList.contains("js-decrease")) {
+  
+  if (
+    e.target.classList.contains("js-increase") ||
+    e.target.classList.contains("js-decrease")
+  ) {
     e.preventDefault();
     const id = e.target.dataset.id;
     let qty = parseInt(e.target.dataset.qty);
@@ -128,12 +147,16 @@ cartList.addEventListener("click", function (e) {
 
     updateCartQty(id, qty);
   }
-
+});
+cartList.addEventListener("click", function (e) {
+  e.preventDefault();
   const cartId = e.target.getAttribute("data-id");
   if (!cartId) return alert("你點到其它東西了");
 
   axios
-    .delete(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts/${cartId}`)
+    .delete(
+      `https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts/${cartId}`
+    )
     .then(function () {
       alert("刪除單筆購物車成功");
       getCartList();
@@ -142,12 +165,15 @@ cartList.addEventListener("click", function (e) {
 
 function updateCartQty(id, qty) {
   axios
-    .patch(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts`, {
-      data: {
-        id: id,
-        quantity: qty
+    .patch(
+      `https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts`,
+      {
+        data: {
+          id: id,
+          quantity: qty,
+        },
       }
-    })
+    )
     .then(function (response) {
       console.log("數量更新成功", response.data);
       getCartList(); // 重新渲染畫面
@@ -158,13 +184,14 @@ function updateCartQty(id, qty) {
     });
 }
 
-
 // ======= 刪除全部購物車 =======
 const discardAllBtn = document.querySelector(".discardAllBtn");
 discardAllBtn.addEventListener("click", function (e) {
   e.preventDefault();
   axios
-    .delete(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts`)
+    .delete(
+      `https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts`
+    )
     .then(function () {
       alert("刪除全部購物車成功");
       getCartList();
@@ -179,21 +206,21 @@ const form = document.querySelector(".orderInfo-form");
 const inputs = form.querySelectorAll("input[name], select[name]");
 
 const constraints = {
-  "姓名": {
+  姓名: {
     presence: { allowEmpty: false, message: "必填欄位" },
   },
-  "電話": {
+  電話: {
     presence: { allowEmpty: false, message: "必填欄位" },
     format: { pattern: /^09\\d{8}$/, message: "格式錯誤，需為09開頭共10碼" },
   },
-  "Email": {
+  Email: {
     presence: { allowEmpty: false, message: "必填欄位" },
     email: { message: "格式錯誤" },
   },
-  "寄送地址": {
+  寄送地址: {
     presence: { allowEmpty: false, message: "必填欄位" },
   },
-  "交易方式": {
+  交易方式: {
     presence: { allowEmpty: false, message: "必填欄位" },
   },
 };
@@ -270,17 +297,20 @@ orderInfoBtn.addEventListener("click", function (e) {
   const customertradeWay = document.querySelector("#tradeWay").value;
 
   axios
-    .post(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/orders`, {
-      data: {
-        user: {
-          name: customerName,
-          tel: customerPhone,
-          email: customerEmail,
-          address: customerAddress,
-          payment: customertradeWay,
+    .post(
+      `https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/orders`,
+      {
+        data: {
+          user: {
+            name: customerName,
+            tel: customerPhone,
+            email: customerEmail,
+            address: customerAddress,
+            payment: customertradeWay,
+          },
         },
-      },
-    })
+      }
+    )
     .then(function () {
       alert("訂單建立成功");
       form.reset();
