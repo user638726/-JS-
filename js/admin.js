@@ -163,12 +163,9 @@ orderList.addEventListener("click", function (e) {
 });
 
 function changeOrderStatus(status, id) {
-  let newStatus;
-  if (status == true) {
-    newStatus = false;
-  } else {
-    newStatus = true;
-  }
+  // 將字串轉為布林
+  let newStatus = status === "true" ? false : true;
+
   axios
     .put(
       `https://livejs-api.hexschool.io/api/livejs/v1/admin/${api_path}/orders`,
