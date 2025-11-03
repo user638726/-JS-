@@ -164,7 +164,8 @@ orderList.addEventListener("click", function (e) {
 
 function changeOrderStatus(status, id) {
   // 將字串轉為布林
-  let newStatus = status === "true" ? false : true;
+  let paidStatus = (status === "true"); // 轉成真正布林
+  let newStatus = !paidStatus; 
 
   axios
     .put(
