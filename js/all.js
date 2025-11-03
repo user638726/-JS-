@@ -148,21 +148,6 @@ cartList.addEventListener("click", function (e) {
     updateCartQty(id, qty);
   }
 });
-cartList.addEventListener("click", function (e) {
-  e.preventDefault();
-  const cartId = e.target.getAttribute("data-id");
-  if (!cartId) return alert("你點到其它東西了");
-
-  axios
-    .delete(
-      `https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts/${cartId}`
-    )
-    .then(function () {
-      alert("刪除單筆購物車成功");
-      getCartList();
-    });
-});
-
 function updateCartQty(id, qty) {
   axios
     .patch(
@@ -183,6 +168,22 @@ function updateCartQty(id, qty) {
       alert("更新購物車數量失敗");
     });
 }
+cartList.addEventListener("click", function (e) {
+  e.preventDefault();
+  const cartId = e.target.getAttribute("data-id");
+  if (!cartId) return alert("你點到其它東西了");
+
+  axios
+    .delete(
+      `https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts/${cartId}`
+    )
+    .then(function () {
+      alert("刪除單筆購物車成功");
+      getCartList();
+    });
+});
+
+
 
 // ======= 刪除全部購物車 =======
 const discardAllBtn = document.querySelector(".discardAllBtn");
