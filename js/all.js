@@ -80,30 +80,55 @@ function getCartList() {
     .then(function (response) {
       document.querySelector(".js-total").textContent = toThousands(response.data.finalTotal);
       CartData = response.data.carts;
+
       let str = "";
       CartData.forEach(function (item) {
-        str += `<tr>
-          <td>
-            <div class="cardItem-title">
-              <img src="${item.product.images}" alt="">
-              <p>${item.product.title}</p>
-            </div>
-          </td>
-          <td>NT$${toThousands(item.product.price)}</td>
-          <td>${item.quantity}</td>
-          <td>NT$${toThousands(item.product.price * item.quantity)}</td>
-          <td class="discardBtn">
-            <a href="#" class="material-icons" data-id="${item.id}"> clear </a>
-          </td>
-        </tr>`;
+        str += `
+          <tr>
+            <td>
+              <div class="cardItem-title">
+                <img src="${item.product.images}" alt="">
+                <p>${item.product.title}</p>
+              </div>
+            </td>
+            <td>NT$${toThousands(item.product.price)}</td>
+            <td>
+              <button class="js-decrease" data-id="${item.id}" data-qty="${item.quantity}">-</button>
+              <span class="mx-2">${item.quantity}</span>
+              <button class="js-increase" data-id="${item.id}" data-qty="${item.quantity}">+</button>
+            </td>
+            <td>NT$${toThousands(item.product.price * item.quantity)}</td>
+            <td class="discardBtn">
+              <a href="#" class="material-icons" data-id="${item.id}"> clear </a>
+            </td>
+          </tr>`;
       });
       cartList.innerHTML = str;
     })
     .catch((error) => console.error("資料載入失敗", error));
 }
 
+
 cartList.addEventListener("click", function (e) {
   e.preventDefault();
+  if (e.target.classList.contains("js-increase") || e.target.classList.contains("js-decrease")) {
+    e.preventDefault();
+    const id = e.target.dataset.id;
+    let qty = parseInt(e.target.dataset.qty);
+
+    if (e.target.classList.contains("js-increase")) {
+      qty++;
+    } else if (e.target.classList.contains("js-decrease")) {
+      qty--;
+      if (qty < 1) {
+        alert("數量不可小於 1，如要刪除請按垃圾桶");
+        return;
+      }
+    }
+
+    updateCartQty(id, qty);
+  }
+
   const cartId = e.target.getAttribute("data-id");
   if (!cartId) return alert("你點到其它東西了");
 
@@ -114,6 +139,25 @@ cartList.addEventListener("click", function (e) {
       getCartList();
     });
 });
+
+function updateCartQty(id, qty) {
+  axios
+    .patch(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts`, {
+      data: {
+        id: id,
+        quantity: qty
+      }
+    })
+    .then(function (response) {
+      console.log("數量更新成功", response.data);
+      getCartList(); // 重新渲染畫面
+    })
+    .catch(function (error) {
+      console.error("更新失敗", error);
+      alert("更新購物車數量失敗");
+    });
+}
+
 
 // ======= 刪除全部購物車 =======
 const discardAllBtn = document.querySelector(".discardAllBtn");
