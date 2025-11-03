@@ -132,8 +132,8 @@ cartList.addEventListener("click", function (e) {
     e.target.classList.contains("js-decrease")
   ) {
     e.preventDefault();
-    const id = e.target.dataset.id;
-    let qty = parseInt(e.target.dataset.qty);
+    const id = e.target.getAttribute("data-id");
+    let qty = parseInt(e.target.getAttribute("data-qty"));
 
     if (e.target.classList.contains("js-increase")) {
       qty++;
@@ -160,8 +160,7 @@ function updateCartQty(id, qty) {
       }
     )
     .then(function (response) {
-      console.log("數量更新成功", response.data);
-      getCartList(); // 重新渲染畫面
+      getCartList()
     })
     .catch(function (error) {
       console.error("更新失敗", error);
