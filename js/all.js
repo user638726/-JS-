@@ -170,8 +170,9 @@ function updateCartQty(id, qty) {
 }
 cartList.addEventListener("click", function (e) {
   e.preventDefault();
-  const cartId = e.target.getAttribute("data-id");
-  if (!cartId) return alert("你點到其它東西了");
+   if (e.target.classList.contains("material-icons")) {
+    const cartId = e.target.getAttribute("data-id");
+
 
   axios
     .delete(
@@ -181,6 +182,7 @@ cartList.addEventListener("click", function (e) {
       alert("刪除單筆購物車成功");
       getCartList();
     });
+  }
 });
 
 
