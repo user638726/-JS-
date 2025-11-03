@@ -212,9 +212,9 @@ const constraints = {
     presence: { allowEmpty: false, message: "必填欄位" },
   },
   電話: {
-    presence: { allowEmpty: false, message: "必填欄位" },
-    format: { pattern: /^09\\d{8}$/, message: "格式錯誤，需為09開頭共10碼" },
-  },
+  presence: { allowEmpty: false, message: "必填欄位" },
+  format: { pattern: /^09\d{8}$/, message: "格式錯誤，需為09開頭共10碼" },
+},
   Email: {
     presence: { allowEmpty: false, message: "必填欄位" },
     email: { message: "格式錯誤" },
