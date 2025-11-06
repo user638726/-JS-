@@ -322,7 +322,8 @@ orderInfoBtn.addEventListener("click", function (e) {
 
 // ======= 千分位工具 =======
 function toThousands(num) {
+  if (num == null || isNaN(num)) return "0";
   const [integer, decimal] = num.toString().split(".");
-  const formatted = integer.replace(/\B(?=(\\d{3})+(?!\\d))/g, ",");
+  const formatted = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return decimal ? `${formatted}.${decimal}` : formatted;
 }
