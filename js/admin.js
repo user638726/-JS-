@@ -104,7 +104,7 @@ function getOrderList() {
         //組時間字串
         const timeStamp = new Date(item.createdAt * 1000);
         const orderTime = `${timeStamp.getFullYear()}/${
-          timeStamp.getMonth()
+          timeStamp.getMonth() + 1
         }/${timeStamp.getDate()}`;
         console.log(orderTime);
         //組產品字串
